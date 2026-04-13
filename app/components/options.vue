@@ -7,13 +7,13 @@
       <v-fab
         v-bind="activatorProps"
         size="large"
-        icon="$vuetify"
+        icon="$menu"
       ></v-fab>
     </template>
 
-    <v-btn key="1" icon="$success" to="/"></v-btn>
-    <v-btn key="2" icon="$info" to="/CellA"></v-btn>
-    <v-btn key="3" icon="$warning" to="/about"></v-btn>
-    <v-btn key="4" icon="$error"></v-btn>
+    <v-btn key="1" icon="$info" to="/"></v-btn>
+    <v-btn key="2" icon="$prev" to="/CellA"></v-btn>
+    <v-btn key="3" icon="$next" to="/about"></v-btn>
+    <v-btn key="4" icon="$cancel"></v-btn>
   </v-speed-dial>
 </template>
