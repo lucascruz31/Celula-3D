@@ -1,12 +1,14 @@
 <template>
-  <div class="page-wrapper">
-    <div class="main-title text-h4 font-weight-bold">INICIO</div>
-    <div class="content">
-      <h1 class="text-h2 font-weight-bold mb-4">Proyecto Célula 3D</h1>
-      <p class="text-h6">Explora la anatomía celular en un formato interactivo tridimensional.</p>
+  <v-model>
+    <div class="page-wrapper">
+      <div class="main-title text-h4 font-weight-bold">INICIO</div>
+      <div class="content">
+        <h1 class="text-h2 font-weight-bold mb-4">Proyecto Célula 3D</h1>
+        <p class="text-h6">Explora la anatomía celular en un formato interactivo tridimensional.</p>
+      </div>
+      <options />
     </div>
-    <options />
-  </div>
+  </v-model>
 </template>
 
 <style scoped>

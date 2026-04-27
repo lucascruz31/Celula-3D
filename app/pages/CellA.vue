@@ -1,11 +1,11 @@
 <template>
-    <v-main>
+    <v-model>
       <div class="cell-wrapper">
         <div class="main-title text-h4 font-weight-bold">CÉLULA ANIMAL</div>
         <options />
       </div>
       <CellModel />
-    </v-main>
+    </v-model>
 </template>
 
 <style scoped>
