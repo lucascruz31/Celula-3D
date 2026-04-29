@@ -1,11 +1,10 @@
 <template>
-    <v-model>
-      <div class="cell-wrapper">
-        <div class="main-title text-h4 font-weight-bold">CÉLULA ANIMAL</div>
-        <options />
-      </div>
+  <div class="cell-page-container">
+    <div class="main-title text-h4 font-weight-bold">CÉLULA ANIMAL</div>
+    <ClientOnly fallback-tag="span" fallback="Cargando modelo 3D...">
       <CellModel />
-    </v-model>
+    </ClientOnly>
+  </div>
 </template>
 
 <style scoped>
@@ -14,6 +13,7 @@
   height: 100vh;
   background-color: #0a0a0a;
   position: relative;
+  overflow: hidden;
 }
 
 .main-title {
@@ -23,12 +23,6 @@
   color: white;
   pointer-events: none;
   border-bottom: 2px solid white;
-}
-.cell-wrapper {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  background-color: #0a0a0a;
+  z-index: 10;
 }
 </style>

@@ -1,5 +1,4 @@
 <template>
-  <v-model>
     <div class="page-wrapper">
       <div class="main-title text-h4 font-weight-bold">ACERCA DE</div>
       <div class="content">
@@ -8,7 +7,6 @@
       </div>
       <options />
     </div>
-  </v-model>
 </template>
 
 <style scoped>
