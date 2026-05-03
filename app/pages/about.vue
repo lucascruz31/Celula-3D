@@ -5,7 +5,6 @@
         <h1 class="text-h3 font-weight-bold mb-4">Información</h1>
         <p class="text-body-1">Esta es una aplicación interactiva en 3D diseñada para la visualización de estructuras celulares, desarrollada con Vue 3 y Three.js.</p>
       </div>
-      <options />
     </div>
 </template>
 

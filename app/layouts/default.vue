@@ -1,7 +1,7 @@
 <template>
   <v-card class="mx-auto" elevation="0">
     <v-layout>
-      <v-app-bar color="primary">
+      <v-app-bar color= #00e5ff>
         <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
         <v-toolbar-title>Proyecto Célula</v-toolbar-title>
@@ -14,7 +14,15 @@
         v-model="drawer"
         temporary
       >
-        <v-list :items="items"></v-list>
+        <v-list>
+          <v-list-item
+            v-for="item in items"
+            :key="item.value"
+            :to="item.to"
+            :title="item.title"
+            @click="drawer = false"
+          ></v-list-item>
+        </v-list>
       </v-navigation-drawer>
 
       <v-main>
@@ -28,20 +36,24 @@
 
   const items = [
     {
-      title: 'Foo',
-      value: 'foo',
+      title: 'Inicio',
+      value: 'inicio',
+      to: '/',
     },
     {
-      title: 'Bar',
-      value: 'bar',
+      title: 'Celula Animal',
+      value: 'CellA',
+      to: '/CellA',
     },
     {
-      title: 'Fizz',
-      value: 'fizz',
+      title: 'Celula Vegetal',
+      value: 'CellV',
+      to: '/CellV',
     },
     {
-      title: 'Buzz',
-      value: 'buzz',
+      title: 'Cuestionario',
+      value: 'about',
+      to: '/about',
     },
   ]
 

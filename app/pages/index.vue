@@ -5,7 +5,6 @@
         <h1 class="text-h2 font-weight-bold mb-4">Proyecto Célula 3D</h1>
         <p class="text-h6">Explora la anatomía celular en un formato interactivo tridimensional.</p>
       </div>
-      <options />
     </div>
 </template>
 

@@ -2,10 +2,6 @@
   <div class="cell-wrapper">
     <div ref="canvasContainer" class="canvas-container"></div>
     
-    <div class="ui-overlay">
-      <h1 class="text-h4 font-weight-bold mb-1">CÉLULA ANIMAL INTERACTIVA</h1>
-      <p class="text-caption text-grey-lighten-1">Haz clic en las etiquetas para ver los conceptos</p>
-    </div>
 
     <v-dialog v-model="dialog" max-width="500" transition="dialog-bottom-transition">
       <v-card class="rounded-xl border-sm">
