@@ -21,11 +21,6 @@
       </v-card>
     </v-dialog>
 
-    <div class="legend-box">
-      <div class="legend-item"><span class="dot nucleus"></span> Núcleo/Nucléolo</div>
-      <div class="legend-item"><span class="dot energy"></span> Mitocondrias</div>
-      <div class="legend-item"><span class="dot synthesis"></span> Síntesis y Transporte</div>
-    </div>
   </div>
 </template>
 

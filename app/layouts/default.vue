@@ -52,8 +52,8 @@
     },
     {
       title: 'Cuestionario',
-      value: 'about',
-      to: '/about',
+      value: 'cuestionario',
+      to: '/cuestionario',
     },
   ]
 
