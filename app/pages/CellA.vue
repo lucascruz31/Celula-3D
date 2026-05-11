@@ -1,6 +1,10 @@
 <template>
   <div class="cell-page-container">
-    <div class="main-title text-h4 font-weight-bold">CÉLULA ANIMAL</div>
+    <!-- Título flotante -->
+    <div class="ui-overlay">
+      <h1 class="title-glow">Célula Animal 3D</h1>
+      <p class="subtitle-text">Haz clic en las etiquetas para explorar cada orgánulo</p>
+    </div>
     <ClientOnly fallback-tag="span" fallback="Cargando modelo 3D...">
       <CellModel />
     </ClientOnly>

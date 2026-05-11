@@ -7,7 +7,8 @@
         <v-toolbar-title>Proyecto Célula</v-toolbar-title>
 
         <v-spacer></v-spacer>
-        <v-btn icon="mdi-dots-vertical" variant="text"></v-btn>
+        <v-btn icon="mdi-login" variant="text" to="/login"></v-btn>
+        <v-btn icon="mdi-logout" variant="text"></v-btn>
       </v-app-bar>
 
       <v-navigation-drawer
