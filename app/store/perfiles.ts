@@ -1,6 +1,7 @@
 // app/stores/playlists.ts
 // Setup Store de Pinia 3 — playlists con Read y Create
 import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
 import type { Perfiles } from '~/shared/types'
 
 export const usePerfilesStore = defineStore('perfiles', () => {
@@ -77,6 +78,48 @@ export const usePerfilesStore = defineStore('perfiles', () => {
         currentPerfil.value = null
     }
 
+    // Crea un nuevo perfil en la base de datos
+    async function addPerfil(perfil: Omit<Perfiles, 'id'>) {
+        isLoading.value = true
+        try {
+            // Generar un id simple (usamos la fecha para asegurarnos de que sea único)
+            const newPerfil = {
+                ...perfil,
+                id: Date.now().toString()
+            }
+            await $fetch('/api/perfiles', {
+                method: 'POST',
+                body: newPerfil
+            })
+            // Refrescar la lista de perfiles
+            await fetchPerfiles()
+            return true
+        } catch (e) {
+            console.error('[PerfilesStore] addPerfil failed:', e)
+            return false
+        } finally {
+            isLoading.value = false
+        }
+    }
+
+    // Elimina un perfil de la base de datos por ID
+    async function deletePerfil(id: string) {
+        isLoading.value = true
+        try {
+            await $fetch(`/api/perfiles/${id}`, {
+                method: 'DELETE'
+            })
+            // Refrescar la lista de perfiles
+            await fetchPerfiles()
+            return true
+        } catch (e) {
+            console.error('[PerfilesStore] deletePerfil failed:', e)
+            return false
+        } finally {
+            isLoading.value = false
+        }
+    }
+
     // retorna el estado, getters y acciones para ser usados en los componentes y paginas
     return {
         perfiles,
@@ -86,6 +129,8 @@ export const usePerfilesStore = defineStore('perfiles', () => {
         fetchPerfiles,
         login,
         logout,
+        addPerfil,
+        deletePerfil,
         // fetchPlaylistById,
         // getTracksForPlaylist,
         // setCurrentPlaylist,

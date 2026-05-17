@@ -6,3 +6,8 @@ export interface Perfiles {
     password: string
     rol: string
 }
+export interface answers {
+    id: string
+    questionId: string
+    answer: string
+}

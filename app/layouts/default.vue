@@ -33,7 +33,7 @@
   </v-card>
 </template>
 <script setup>
-  import { ref, watch } from 'vue'
+  import { ref, watch, computed } from 'vue'
   import { navigateTo } from '#imports'
   import { usePerfilesStore } from '~/store/perfiles'
 
@@ -44,28 +44,41 @@
     navigateTo('/login');
   }
 
-  const items = [
-    {
-      title: 'Inicio',
-      value: 'inicio',
-      to: '/',
-    },
-    {
-      title: 'Celula Animal',
-      value: 'CellA',
-      to: '/CellA',
-    },
-    {
-      title: 'Celula Vegetal',
-      value: 'CellV',
-      to: '/CellV',
-    },
-    {
-      title: 'Cuestionario',
-      value: 'cuestionario',
-      to: '/cuestionario',
-    },
-  ]
+  const items = computed(() => {
+    const baseItems = [
+      {
+        title: 'Inicio',
+        value: 'inicio',
+        to: '/',
+      },
+      {
+        title: 'Celula Animal',
+        value: 'CellA',
+        to: '/CellA',
+      },
+      {
+        title: 'Celula Vegetal',
+        value: 'CellV',
+        to: '/CellV',
+      },
+      {
+        title: 'Cuestionario',
+        value: 'cuestionario',
+        to: '/cuestionario',
+      }
+    ]
+
+    if (store.currentPerfil?.rol === 'Admin') {
+      baseItems.push({
+        title: 'Configuración',
+        value: 'config',
+        to: '/config',
+      })
+    }
+
+    return baseItems
+  })
+
 
   const drawer = ref(false)
   const group = ref(null)
