@@ -7,8 +7,8 @@
         <v-toolbar-title>Proyecto Célula</v-toolbar-title>
 
         <v-spacer></v-spacer>
-        <v-btn icon="mdi-login" variant="text" to="/login"></v-btn>
-        <v-btn icon="mdi-logout" variant="text"></v-btn>
+        
+        <v-btn icon="mdi-logout" variant="text" @click="handleLogout"></v-btn>
       </v-app-bar>
 
       <v-navigation-drawer
@@ -34,6 +34,15 @@
 </template>
 <script setup>
   import { ref, watch } from 'vue'
+  import { navigateTo } from '#imports'
+  import { usePerfilesStore } from '~/store/perfiles'
+
+  const store = usePerfilesStore()
+
+  const handleLogout = () => {
+    store.logout();
+    navigateTo('/login');
+  }
 
   const items = [
     {

@@ -5,6 +5,9 @@ export default defineNuxtConfig({
   build: {
     transpile: ['three', 'vuetify'],
   },
+  modules: [
+    '@pinia/nuxt'
+  ],
   vite: {
     plugins: [
       vuetify({ autoImport: true }),

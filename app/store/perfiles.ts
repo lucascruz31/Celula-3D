@@ -52,6 +52,31 @@ export const usePerfilesStore = defineStore('perfiles', () => {
       currentPlaylist.value = playlist
     }*/
 
+    // Autentica un usuario enviando sus credenciales al servidor
+    async function login(username: string, password: string): Promise<boolean> {
+        isLoading.value = true
+        try {
+            const result = await $fetch<Perfiles>('/api/perfiles/login', {
+                method: 'POST',
+                body: { username, password }
+            })
+            if (result) {
+                currentPerfil.value = result
+                return true
+            }
+            return false
+        } catch (e) {
+            console.error('[PerfilesStore] login failed:', e)
+            return false
+        } finally {
+            isLoading.value = false
+        }
+    }
+
+    function logout() {
+        currentPerfil.value = null
+    }
+
     // retorna el estado, getters y acciones para ser usados en los componentes y paginas
     return {
         perfiles,
@@ -59,6 +84,8 @@ export const usePerfilesStore = defineStore('perfiles', () => {
         isLoading,
         totalPerfiles,
         fetchPerfiles,
+        login,
+        logout,
         // fetchPlaylistById,
         // getTracksForPlaylist,
         // setCurrentPlaylist,
