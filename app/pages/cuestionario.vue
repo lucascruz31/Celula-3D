@@ -3,7 +3,7 @@
     <div class="cuestionario-container">
       <div class="header">
         <h1 class="title">Módulo de Cuestionario</h1>
-        <div class="mode-switch">
+        <div class="mode-switch" v-if="!isStudent">
           <button 
             :class="['btn', { active: isTeacherMode }]" 
             @click="isTeacherMode = true"
@@ -16,6 +16,9 @@
           >
             Modo Estudiante
           </button>
+        </div>
+        <div class="mode-switch" v-else>
+           <span class="student-label">Modo Estudiante</span>
         </div>
       </div>
 
@@ -61,6 +64,7 @@
 
         <div class="actions">
           <button @click="addQuestion" class="btn-primary">+ Añadir Pregunta</button>
+          <button @click="saveCuestionario" class="btn-success" style="margin-left: 10px;">Guardar</button>
         </div>
       </div>
 
@@ -69,35 +73,40 @@
         
         <!-- Vista del cuestionario activo -->
         <div v-if="!showResults" class="quiz-container">
-          <div v-for="(question, qIndex) in studentQuestions" :key="question.id" class="question-block">
-            <h3>{{ qIndex + 1 }}. {{ question.text }}</h3>
-            
-            <div class="student-options">
-              <label 
-                v-for="option in question.options" 
-                :key="option.id" 
-                class="student-option-label"
-                :class="{ 'selected': studentAnswers[question.id] === option.id }"
-              >
-                <input 
-                  type="radio" 
-                  :name="`student-answer-${question.id}`" 
-                  :value="option.id" 
-                  v-model="studentAnswers[question.id]"
-                />
-                <span class="option-text">{{ option.text }}</span>
-              </label>
-            </div>
+          <div v-if="noQuestionsAvailable" class="alert-msg">
+            No hay preguntas disponibles o el cuestionario está incompleto. Consulta con el docente.
           </div>
-          
-          <div class="actions">
-            <button 
-              @click="submitAnswers" 
-              class="btn-success" 
-              :disabled="Object.keys(studentAnswers).length < studentQuestions.length"
-            >
-              Enviar Respuestas
-            </button>
+          <div v-else>
+            <div v-for="(question, qIndex) in studentQuestions" :key="question.id" class="question-block">
+              <h3>{{ qIndex + 1 }}. {{ question.text }}</h3>
+              
+              <div class="student-options">
+                <label 
+                  v-for="option in question.options" 
+                  :key="option.id" 
+                  class="student-option-label"
+                  :class="{ 'selected': studentAnswers[question.id] === option.id }"
+                >
+                  <input 
+                    type="radio" 
+                    :name="`student-answer-${question.id}`" 
+                    :value="option.id" 
+                    v-model="studentAnswers[question.id]"
+                  />
+                  <span class="option-text">{{ option.text }}</span>
+                </label>
+              </div>
+            </div>
+            
+            <div class="actions">
+              <button 
+                @click="submitAnswers" 
+                class="btn-success" 
+                :disabled="Object.keys(studentAnswers).length < studentQuestions.length"
+              >
+                Enviar Respuestas
+              </button>
+            </div>
           </div>
         </div>
 
@@ -137,7 +146,7 @@
 
           <div class="actions">
             <button @click="startStudentMode" class="btn-primary">Reintentar</button>
-            <button @click="backToTeacherMode" class="btn">Volver a Edición</button>
+            <button v-if="!isStudent" @click="backToTeacherMode" class="btn">Volver a Edición</button>
           </div>
         </div>
 
@@ -147,7 +156,11 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
+import { usePerfilesStore } from '~/store/perfiles'
+
+const store = usePerfilesStore()
+const isStudent = computed(() => store.currentPerfil?.rol === 'Estudiante')
 
 const isTeacherMode = ref(true)
 
@@ -187,11 +200,35 @@ const removeQuestion = (index) => {
   questions.value.splice(index, 1)
 }
 
+const saveCuestionario = async () => {
+  // Validación opcional antes de guardar
+  const isValid = questions.value.every(q => 
+    q.text.trim() !== '' && 
+    q.options.every(o => o.text.trim() !== '') && 
+    q.correctOptionId
+  )
+  if (!isValid) {
+    alert("Recomendación: Hay preguntas incompletas o sin respuesta correcta seleccionada. Asegúrate de completarlas para que los estudiantes puedan resolverlas.")
+  }
+
+  try {
+    await $fetch('/api/cuestionario', {
+      method: 'PUT',
+      body: { questions: questions.value }
+    })
+    alert('Cuestionario guardado correctamente en la base de datos.')
+  } catch (error) {
+    console.error('Error al guardar el cuestionario:', error)
+    alert('Hubo un error al guardar el cuestionario.')
+  }
+}
+
 // Variables de estado (Modo Estudiante)
 const studentQuestions = ref([])
 const studentAnswers = ref({})
 const showResults = ref(false)
 const score = ref(0)
+const noQuestionsAvailable = ref(false)
 
 // Función para mezclar arreglos de forma aleatoria (Shuffle - Fisher-Yates)
 const shuffleArray = (array) => {
@@ -205,7 +242,7 @@ const shuffleArray = (array) => {
 
 // Transición al Modo Estudiante
 const startStudentMode = () => {
-  if (!isTeacherMode.value && !showResults.value) return
+  if (!isTeacherMode.value && !showResults.value && !isStudent.value) return
 
   // Validación de que todo esté lleno y haya respuesta correcta marcada
   const isValid = questions.value.every(q => 
@@ -214,11 +251,16 @@ const startStudentMode = () => {
     q.correctOptionId
   )
 
-  if (!isValid) {
-    alert("Por favor, completa todas las preguntas, sus 4 opciones y selecciona la respuesta correcta en cada una antes de probar el cuestionario.")
+  if (!isValid || questions.value.length === 0) {
+    if (isStudent.value) {
+      noQuestionsAvailable.value = true
+    } else {
+      alert("Por favor, completa todas las preguntas, sus 4 opciones y selecciona la respuesta correcta en cada una antes de probar el cuestionario.")
+    }
     return
   }
 
+  noQuestionsAvailable.value = false
   isTeacherMode.value = false
   showResults.value = false
   studentAnswers.value = {}
@@ -251,8 +293,42 @@ const submitAnswers = () => {
 }
 
 const backToTeacherMode = () => {
-  isTeacherMode.value = true
+  if (!isStudent.value) {
+    isTeacherMode.value = true
+  }
 }
+
+onMounted(async () => {
+  try {
+    const data = await $fetch('/api/cuestionario')
+    if (data && data.questions && data.questions.length > 0) {
+      questions.value = data.questions
+    } else {
+      // Fallback a localStorage si no hay nada en la BD
+      const saved = localStorage.getItem('cuestionario_preguntas')
+      if (saved) {
+        try {
+          questions.value = JSON.parse(saved)
+        } catch (e) {}
+      }
+    }
+  } catch (error) {
+    console.error('Error al cargar cuestionario:', error)
+  }
+
+  if (isStudent.value) {
+    isTeacherMode.value = false
+    startStudentMode()
+  } else {
+    isTeacherMode.value = true
+  }
+})
+
+watch(questions, (newVal) => {
+  if (!isStudent.value) {
+    localStorage.setItem('cuestionario_preguntas', JSON.stringify(newVal))
+  }
+}, { deep: true })
 </script>
 
 <style scoped>
@@ -503,5 +579,21 @@ textarea:focus, input[type="text"]:focus {
 .instructions {
   margin-bottom: 20px;
   color: #aaa;
+}
+
+.alert-msg {
+  padding: 20px;
+  background: rgba(255, 71, 87, 0.1);
+  border: 1px solid #ff4757;
+  border-radius: 8px;
+  color: #ff4757;
+  text-align: center;
+  font-weight: bold;
+}
+
+.student-label {
+  color: #00e5ff;
+  font-weight: bold;
+  padding: 8px 16px;
 }
 </style>
